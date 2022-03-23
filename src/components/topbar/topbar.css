@@ -1,0 +1,14 @@
+.topbar{
+    height: 70px;
+    width: 100%;
+    display: flex;
+    background-color: darkseagreen;;
+    align-items: center;
+
+}
+
+.logo{
+    font-size: 40px;
+    color:darkslateblue;
+    background-color: darkseagreen;
+}

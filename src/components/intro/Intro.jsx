@@ -1,12 +1,16 @@
-import './intro.scss'
+import './intro.css'
 import { ethers } from 'ethers'
 import { useState, useEffect, useRef } from 'react'
 import abi from './abi.json'
 import {networks} from './network'
+import ethLogo from './ethlogo.png'
+import polygonLogo from './polygonlogo.png'
+import twitterLogo from './twitter-logo.svg';
 
 
 
 export default function Intro() {
+
   const[allAmount, setAllAmount] = useState({
                                       buyTokenAmount:"",
                                       buyAddress:"",
@@ -15,18 +19,19 @@ export default function Intro() {
                                       transferAddress:""
 
                                           })
-  const [userStake, setUserStake] = useState(0.00)
-  const [userBalance , setUserBalance] = useState(0.00)
+  const [userStake, setUserStake] = useState('0.00')
+  const [userBalance , setUserBalance] = useState('0.00')
   const[account, setAccount] = useState(null);
-  const[connectButtonText, setConnectButtonText] = useState('Connect Wallet')
+
   
 
     const [network, setNetwork] = useState('');
-    const[total, setTotal] = useState(0)
+    
 
 
-  const contractAddress = '0x4d1f7C444d626525bE5096889A7431C79784A1ec'
-
+  const contractAddress = '0x4f2685F49be5f027c9Eb94e5e3F27d6cC34e0749'
+  const TWITTER_HANDLE = 'wandeoki';
+  const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;                                    
   
   
   const connectWallet = async () => {
@@ -44,7 +49,7 @@ export default function Intro() {
 			// Boom! This should print out public address once we authorize Metamask.
 			console.log("Connected", accounts[0]);
 			setAccount(accounts[0]);
-      setConnectButtonText("Wallet Connected")
+      
     
 		} catch (error) {
 			console.log("something went wrong")
@@ -131,7 +136,7 @@ export default function Intro() {
 
   useEffect(() => {
     if (network === 'Polygon Mumbai Testnet') {
-      tokenBalance();
+      renderInputForm();
     }
   }, [account, network])
   
@@ -177,7 +182,8 @@ const buyMyToken = async() =>{
     }else{
       alert('transaction failed, please fund your account')
     }
-  
+    const bbb = price * 1000
+    setUserBalance(bbb)
    }
     
   }catch(error){
@@ -206,7 +212,7 @@ const transferToken = async()=>{
           }else{
             alert('transaction failed, please fund your account')
           }
-
+          
     }
 
   }catch(error){console.log(error)}
@@ -248,11 +254,11 @@ const tokenBalance = async () =>{
       const signer = provider.getSigner();
       const con = new ethers.Contract(contractAddress, abi.abi, signer);
 
-      const balance = await con.balanceOf(account)
-      const stakeOf = await con.stakeOf(account)
-
-      setUserBalance(balance)
-      setUserStake(stakeOf)
+      const tx = await con.balanceOf(account)
+        const balance = await tx.wait
+        
+      setUserBalance(ethers.utils.formatEther(tx))
+      
 
             
   }} catch(error){
@@ -276,7 +282,7 @@ const claimReward = async() => {
         }else{
           alert("you can only claim rewards after 7 days")
         }
-
+        
     }
   }catch(error){
     alert("you can only withdraw after 7days")
@@ -298,7 +304,7 @@ const withdraw = async() => {
         }else{
           alert("you can only withdraw after 7days")
         }
-
+        setUserStake("0.00")
     }
   }catch(error){
     alert("you can only withdraw after 7days")
@@ -324,10 +330,16 @@ const renderInputForm = () =>{
   }
 
   return (
+    <>
     <div className='right'>
      <div>
-       <em>{account}</em>
-  
+       <header>
+     <div className="rectangle">
+			<img alt="Network logo" className="logo" src={ network.includes("Polygon") ? polygonLogo : ethLogo} />
+			{ account ? <p> Wallet: {account.slice(0, 6)}...{account.slice(-4)} </p> : <p> Not connected </p> }
+		</div>
+    <div> <button className='btn' onClick={tokenBalance}> View Token Balance</button></div>
+      </header>
      </div>
       <div>
       <input 
@@ -346,17 +358,17 @@ const renderInputForm = () =>{
                     value={allAmount.buyAddress}
                     onChange={handleChange}
                 />
-                <button onClick={buyMyToken}> Buy Token</button>
-                <input 
-                    type="text"
+                <button className= "btn" onClick={buyMyToken}> Buy Token</button>
+                <input                    type="text"
                     placeholder="Amount To Stake"
                     className="form--input"
                     name="stakeAmount"
                     value={allAmount.stakeAmount}
                     onChange={handleChange}
                 />
-                <button onClick={stakeToken}> Stake Token</button>
+                <button className='btn' onClick={stakeToken}> Stake Token</button>
       </div>
+      
       <input 
                     type="text"
                     placeholder="Wallet Address"
@@ -373,41 +385,57 @@ const renderInputForm = () =>{
                     value={allAmount.transferAmount}
                     onChange={handleChange}
                 />
-                <button onClick={transferToken}>Transfer Tokens</button>
+                <button className='btn' onClick={transferToken}>Transfer Tokens</button>
+               
+               
     </div>
-    <div>
+    <div className='claim'>
              
-      <button onClick={claimReward}>Claim Rewards</button>
-      <button onClick={withdraw}>Withdraw Balance</button>
+      <button className='btn' onClick={claimReward}>Claim Rewards</button></div>
+      <div>
+      <button  className='btn' onClick={withdraw}>Withdraw Balance</button>
     </div>
-    
+    </>
  );
 }
   return (
     <div className='intro' id='intro'>
     <div className='left'>
       <div className='opening'>
-      <h2>Welcome To Biggyvest</h2>
-        <h3>Stake you Blocktokens and get 1percent everyweek</h3>
+      <h2>Welcome To Biggyvest</h2></div>
+      <div className='next'>
+        <h3>Stake you Blocktokens and get 1percent everyweek!!!</h3>
       </div>
-      <div>
       
-      <button onClick={connectWallet}>{connectButtonText}</button>
-      </div>
       <div>
        {/* <button onClick={fetchStakes}>{total}</button> */}
       </div>
       
-      <div>
-      <p> Your balances are, Token - {userBalance} and Stake - {userStake}</p>
-      <button onClick={tokenBalance}>View Balance</button>
-      </div>
+     { account && <div>
+      <p> Your balances are : Stake - {userStake} , Token - {userBalance}</p>
+      
+      </div>}
 
     
     </div>
-      
-    
+    <div>
+    {!account && renderNotConnectedContainer()}
     </div>
+    <div>
+    {account && renderInputForm()} 
+    </div>
+        
+    <div className="footer-container">
+					<img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
+					<a
+						className="footer-text"
+						href={TWITTER_LINK}
+						target="_blank"
+						rel="noreferrer"
+					>{`built by @${TWITTER_HANDLE}`}</a>
+				</div>
+    </div>
+    
   )
 }
  

@@ -1,21 +1,17 @@
-import './topbar.scss'
+import './topbar.css'
 
 export default function Topbar() {
 
     
   return (
-    <div className={'topbar '} id='topbar'>
+    <div className='topbar' id='topbar'>
         <div className="wrapper">
         
             <div className="left">
-                <a href="#intro" className='logo'>BIGGYVEST</a>
+                <a  className='logo'>BIGGYVEST <i>inc.</i></a>
                 
                   </div>
-                  
-            <div className="right">
-           
-            </div>
-        </div>
+           </div>
     </div>
   )
 }

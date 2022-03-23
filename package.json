@@ -1,5 +1,5 @@
 {
-  "name": "portfolio",
+  "name": "biggyvest",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -11,7 +11,6 @@
     "@testing-library/user-event": "^13.5.0",
     "ethers": "^5.6.1",
     "framer-motion": "^6.2.6",
-    "gh-pages": "^3.2.3",
     "ityped": "^1.0.3",
     "node-sass": "^7.0.1",
     "react": "^17.0.2",
@@ -42,5 +41,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^3.2.3"
   }
 }
